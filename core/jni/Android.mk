@@ -237,6 +237,7 @@ LOCAL_SHARED_LIBRARIES := \
 	libicuuc \
 	libicui18n \
 	libmedia \
+	libphonelocation \
 	libjpeg \
 	libusbhost \
 	libharfbuzz_ng \
