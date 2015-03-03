@@ -3304,11 +3304,24 @@ public final class Settings {
          */
         public static final String POWER_MENU_CONFIG = "power_menu_config";
 
+        /**
+         * Config for advanced power menu
+         *
+         * @hide
+         */
+        public static final String QUICK_TILE_CONFIG = "quick_tile_config";
+
          /**
         * Whether navigation bar is enabled or not
         * @hide
         */
         public static final String NAVIGATION_BAR_SHOW = "navigation_bar_show";
+
+        /**
+         * Height of navigation bar buttons
+         * @hide
+         */
+        public static final String NAVIGATION_BAR_HEIGHT = "navigation_bar_height";
 
         /**
          * MediaScanner behavior on boot.
