@@ -115,13 +115,13 @@ public class NetworkStatsView extends LinearLayout {
         @Override
         public void onChange(boolean selfChange) {
             mActivated = (Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.STATUS_BAR_NETWORK_STATS, 0)) == 1;
+                    Settings.System.STATUS_BAR_NETWORK_STATS, 1)) == 1;
 
             mRefreshInterval = Settings.System.getLong(mContext.getContentResolver(),
                     Settings.System.STATUS_BAR_NETWORK_STATS_UPDATE_INTERVAL, 500);
 
             mShowArrow = (Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.STATUS_BAR_NETWORK_STATS_SHOW_ARROW, 1)) == 1;
+                    Settings.System.STATUS_BAR_NETWORK_STATS_SHOW_ARROW, 0)) == 1;
 
             if (mShowArrow) {
                 mImageViewRx.setVisibility(View.VISIBLE);

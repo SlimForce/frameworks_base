@@ -904,6 +904,7 @@ public class AppOpsManager {
             OP_NONE,
             OP_NONE,
             OP_NONE,
+            OP_WAKE_LOCK,
             OP_NONE,
             OP_NONE,
             OP_NONE,
@@ -911,20 +912,19 @@ public class AppOpsManager {
             OP_NONE,
             OP_NONE,
             OP_NONE,
+            OP_WIFI_CHANGE,
+            OP_BLUETOOTH_CHANGE,
+            OP_NONE,
+            OP_NONE,
+            OP_NONE,
+            OP_BOOT_COMPLETED,
+            OP_NFC_CHANGE,
             OP_NONE,
             OP_NONE,
             OP_NONE,
             OP_NONE,
-            OP_NONE,
-            OP_NONE,
-            OP_NONE,
-            OP_NONE,
-            OP_NONE,
-            OP_NONE,
-            OP_NONE,
-            OP_NONE,
-            OP_NONE,
-            OP_NONE,
+            OP_DATA_CONNECT_CHANGE,
+            OP_ALARM_WAKEUP,
     };
 
     /**
@@ -1193,6 +1193,7 @@ public class AppOpsManager {
             false,
             false,
             false,
+            true,		// OP_WAKEUP
             false,
             false,
             false,
@@ -1200,20 +1201,19 @@ public class AppOpsManager {
             false,
             false,
             false,
-            false,
-            false,     // OP_WIFI_CHANGE
-            false,     // OP_BLUETOOTH_CHANGE
+            true,     // OP_WIFI_CHANGE
+            true,     // OP_BLUETOOTH_CHANGE
             false,     // OP_SEND_MMS
             false,     // OP_READ_MMS
             false,     // OP_WRITE_MMS
-            false,     // OP_BOOT_COMPLETED
-            false,     // OP_NFC_CHANGE
+            true,     // OP_BOOT_COMPLETED
+            true,     // OP_NFC_CHANGE
             false,     // OP_DELETE_SMS
             false,     // OP_DELETE_MMS
             false,     // OP_DELETE_CONTACTS
             false,     // OP_DELETE_CALL_LOG
-            false,     // OP_DATA_CONNECT_CHANGE
-            false,     // OP_ALARM_WAKEUP
+            true,     // OP_DATA_CONNECT_CHANGE
+            true,     // OP_ALARM_WAKEUP
     };
 
     private static HashMap<String, Integer> sOpStrToOp = new HashMap<String, Integer>();
