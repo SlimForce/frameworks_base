@@ -2145,20 +2145,6 @@ public final class Settings {
                 "lockscreen_shortcuts_longpress";
 
         /**
-         * Defines global heads up snooze time if user want to snooze it.
-         *
-         * @hide
-         */
-        public static final String HEADS_UP_SNOOZE_TIME = "heads_up_snooze_time";
-
-        /**
-         * Defines the global heads up notification decay
-         *
-         * @hide
-         */
-        public static final String HEADS_UP_NOTIFCATION_DECAY = "heads_up_notification_decay";
-
-        /**
          * Timeout for ambient display notification
          * @hide
          */
@@ -2236,13 +2222,6 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_BRIGHTNESS_CONTROL = "status_bar_brightness_control";
-
-        /**
-         * Whether to enable ticker animation in statusbar
-         *
-         * @hide
-         */
-        public static final String STATUS_BAR_TICKER_ENABLED = "status_bar_ticker_enabled";
 
         /**
          * Control whether the process CPU usage meter should be shown.
@@ -3283,9 +3262,29 @@ public final class Settings {
          */
         public static final String STATUS_BAR_NETWORK_STATS_UPDATE_INTERVAL = "status_bar_network_stats_update_frequency";
 
+
         /**
+         * Hide notification instead of remove when swiping headsup
+         * @hide
+         */
+        public static final String HEADS_UP_DISMISS_ON_REMOVE = "heads_up_dismiss_on_remove";
+
+        /**
+<<<<<<< HEAD
          * statusbar network stats text color
          *
+=======
+         * Hide notification 1 second after touching outside
+         * @hide
+         */
+        public static final String HEADS_UP_TOUCH_OUTSIDE = "heads_up_touch_outside";
+
+        /**
+         * MediaScanner behavior on boot.
+         * 0 = enabled
+         * 1 = ask (notification)
+         * 2 = disabled
+>>>>>>> 093fc80... [Heads up] Touch outside to hide (1/2)
          * @hide
          */
         public static final String STATUS_BAR_NETWORK_STATS_TEXT_COLOR = "status_bar_network_stats_text_color";
@@ -3626,6 +3625,34 @@ public final class Settings {
          * @hide
          */
         public static final String LIVE_DISPLAY_HINTED = "live_display_hinted";
+
+        /**
+         * Heads Up Notifications
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_NOTIFICATION = "heads_up_enabled";
+
+        /**
+         * Which applications to disable heads up notifications for
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_CUSTOM_VALUES = "heads_up_custom_values";
+
+        /**
+         * Which applications to disable heads up notifications for
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_BLACKLIST_VALUES = "heads_up_blacklist_values";
+
+        /**
+         * Defines the global heads up notification decay
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_NOTIFCATION_DECAY = "heads_up_notification_decay";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
