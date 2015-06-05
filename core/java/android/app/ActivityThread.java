@@ -124,7 +124,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
-import java.util.regex.Pattern;
 
 import libcore.io.DropBox;
 import libcore.io.EventLogger;
@@ -163,7 +162,6 @@ public final class ActivityThread {
     private static final boolean DEBUG_MEMORY_TRIM = false;
     private static final boolean DEBUG_PROVIDER = false;
     private static final long MIN_TIME_BETWEEN_GCS = 5*1000;
-    private static final Pattern PATTERN_SEMICOLON = Pattern.compile(";");
     private static final int SQLITE_MEM_RELEASED_EVENT_LOG_TAG = 75003;
     private static final int LOG_ON_PAUSE_CALLED = 30021;
     private static final int LOG_ON_RESUME_CALLED = 30022;
@@ -4196,13 +4194,6 @@ public final class ActivityThread {
             } catch (IOException e) {
                 Slog.w(TAG, "Managed heap dump failed on path " + dhd.path
                         + " -- can the process access this path?");
-            } catch (RuntimeException e) {
-                // Throw exception for non-system process for notifying unable dump reason to do error handle.
-                ActivityThread am = currentActivityThread();
-                if (am == null || !am.mSystemThread) {
-                    throw new RuntimeException("Unable to dump heap on path " + dhd.path
-                        + ": " + e.toString(), e);
-                }
             } finally {
                 try {
                     dhd.fd.close();
@@ -4305,7 +4296,7 @@ public final class ActivityThread {
             Slog.i(TAG, "Switching default density from "
                     + DisplayMetrics.DENSITY_DEVICE + " to "
                     + mCurDefaultDisplayDpi);
-            DisplayMetrics.DENSITY_DEVICE = mCurDefaultDisplayDpi;
+            //DisplayMetrics.DENSITY_DEVICE = mCurDefaultDisplayDpi;
             Bitmap.setDefaultDensity(DisplayMetrics.DENSITY_DEFAULT);
         }
     }
@@ -4538,6 +4529,10 @@ public final class ActivityThread {
 
         if ((data.appInfo.flags&ApplicationInfo.FLAG_LARGE_HEAP) != 0) {
             dalvik.system.VMRuntime.getRuntime().clearGrowthLimit();
+        } else {
+            // Small heap, clamp to the current growth limit and let the heap release
+            // pages after the growth limit to the non growth limit capacity. b/18387825
+            dalvik.system.VMRuntime.getRuntime().clampGrowthLimit();
         }
 
         // Allow disk access during application and provider setup. This could
@@ -4942,7 +4937,7 @@ public final class ActivityThread {
 
     private ProviderClientRecord installProviderAuthoritiesLocked(IContentProvider provider,
             ContentProvider localProvider, IActivityManager.ContentProviderHolder holder) {
-        final String auths[] = PATTERN_SEMICOLON.split(holder.info.authority);
+        final String auths[] = holder.info.authority.split(";");
         final int userId = UserHandle.getUserId(holder.info.applicationInfo.uid);
 
         final ProviderClientRecord pcr = new ProviderClientRecord(

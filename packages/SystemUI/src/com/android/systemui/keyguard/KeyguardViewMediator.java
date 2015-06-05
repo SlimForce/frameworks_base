@@ -136,6 +136,8 @@ public class KeyguardViewMediator extends SystemUI {
     private static final String KEYGUARD_SERVICE_ACTION_STATE_CHANGE =
             "com.android.internal.action.KEYGUARD_SERVICE_STATE_CHANGED";
     private static final String KEYGUARD_SERVICE_EXTRA_ACTIVE = "active";
+    private static final String DISMISS_KEYGUARD_SECURELY_ACTION =
+        "com.android.keyguard.action.DISMISS_KEYGUARD_SECURELY";
 
     // used for handler messages
     private static final int SHOW = 2;
@@ -257,6 +259,8 @@ public class KeyguardViewMediator extends SystemUI {
     private KeyguardUpdateMonitor mUpdateMonitor;
 
     private boolean mScreenOn;
+
+    private boolean mDismissSecurelyOnScreenOn = false;
 
     // last known state of the cellular connection
     private String mPhoneState = TelephonyManager.EXTRA_STATE_IDLE;
@@ -541,6 +545,8 @@ public class KeyguardViewMediator extends SystemUI {
         mContext.registerReceiver(mBroadcastReceiver, new IntentFilter(DELAYED_KEYGUARD_ACTION));
         mContext.registerReceiver(mBroadcastReceiver, new IntentFilter(KEYGUARD_SERVICE_ACTION_STATE_CHANGE),
                 android.Manifest.permission.CONTROL_KEYGUARD, null);
+        mContext.registerReceiver(mBroadcastReceiver, new IntentFilter(DISMISS_KEYGUARD_SECURELY_ACTION),
+                android.Manifest.permission.CONTROL_KEYGUARD, null);
 
         mKeyguardDisplayManager = new KeyguardDisplayManager(mContext);
 
@@ -739,6 +745,10 @@ public class KeyguardViewMediator extends SystemUI {
             if (DEBUG) Log.d(TAG, "onScreenTurnedOn, seq = " + mDelayedShowingSequence);
             if (callback != null) {
                 notifyScreenOnLocked(callback);
+            }
+            if (mDismissSecurelyOnScreenOn) {
+                mDismissSecurelyOnScreenOn = false;
+                dismiss();
             }
         }
         KeyguardUpdateMonitor.getInstance(mContext).dispatchScreenTurnedOn();
@@ -1189,6 +1199,14 @@ public class KeyguardViewMediator extends SystemUI {
                 mKeyguardBound = intent.getBooleanExtra(KEYGUARD_SERVICE_EXTRA_ACTIVE, false);
                 context.sendBroadcast(new Intent(LockscreenToggleTile.ACTION_APPLY_LOCKSCREEN_STATE)
                         .setPackage(context.getPackageName()));
+            } else if (DISMISS_KEYGUARD_SECURELY_ACTION.equals(intent.getAction())) {
+                synchronized (KeyguardViewMediator.this) {
+                    if (mScreenOn) {
+                        dismiss();
+                    } else {
+                        mDismissSecurelyOnScreenOn = true;
+                    }
+                }
             }
         }
     };
@@ -1419,7 +1437,8 @@ public class KeyguardViewMediator extends SystemUI {
                 // startKeyguardExitAnimation.
                 mWM.keyguardGoingAway(
                         mStatusBarKeyguardViewManager.shouldDisableWindowAnimationsForUnlock(),
-                        mStatusBarKeyguardViewManager.isGoingToNotificationShade());
+                        mStatusBarKeyguardViewManager.isGoingToNotificationShade(),
+                        mStatusBarKeyguardViewManager.isKeyguardShowingMedia());
             } catch (RemoteException e) {
                 Log.e(TAG, "Error while calling WindowManager", e);
             }

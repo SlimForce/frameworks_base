@@ -555,6 +555,14 @@ public interface WindowManager extends ViewManager {
         public static final int TYPE_ACCESSIBILITY_OVERLAY = FIRST_SYSTEM_WINDOW+32;
 
         /**
+         * Window type: Recents. Same layer as {@link #TYPE_SYSTEM_DIALOG} but only appears on
+         * one user's screen.
+         * In multiuser systems shows on all users' windows.
+         * @hide
+         */
+        public static final int TYPE_RECENTS_OVERLAY = FIRST_SYSTEM_WINDOW+33;
+
+        /**
          * End of types of system windows.
          */
         public static final int LAST_SYSTEM_WINDOW      = 2999;
@@ -1114,7 +1122,7 @@ public interface WindowManager extends ViewManager {
 
         /**
          * Window flag: Overrides default power key behavior
-         * @{hide}
+         * {@hide}
          */
         public static final int PRIVATE_FLAG_PREVENT_POWER_KEY = 0x20000000;
 
