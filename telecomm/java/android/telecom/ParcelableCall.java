@@ -39,6 +39,7 @@ public final class ParcelableCall implements Parcelable {
     private final List<String> mCannedSmsResponses;
     private final int mCapabilities;
     private final int mProperties;
+    private final long mCreateTimeMillis;
     private final long mConnectTimeMillis;
     private final Uri mHandle;
     private final int mHandlePresentation;
@@ -54,8 +55,6 @@ public final class ParcelableCall implements Parcelable {
     private final int mVideoState;
     private final List<String> mConferenceableCallIds;
     private final Bundle mExtras;
-    private int mNotificationType;
-    private int mCode;
     boolean mIsActiveSub;
     private int mCallSubstate;
 
@@ -66,6 +65,7 @@ public final class ParcelableCall implements Parcelable {
             List<String> cannedSmsResponses,
             int capabilities,
             int properties,
+            long createTimeMillis,
             long connectTimeMillis,
             Uri handle,
             int handlePresentation,
@@ -80,8 +80,6 @@ public final class ParcelableCall implements Parcelable {
             int videoState,
             List<String> conferenceableCallIds,
             Bundle extras,
-            int notificationType,
-            int code,
             boolean isActiveSub,
             int callSubstate) {
         mId = id;
@@ -90,6 +88,7 @@ public final class ParcelableCall implements Parcelable {
         mCannedSmsResponses = cannedSmsResponses;
         mCapabilities = capabilities;
         mProperties = properties;
+        mCreateTimeMillis = createTimeMillis;
         mConnectTimeMillis = connectTimeMillis;
         mHandle = handle;
         mHandlePresentation = handlePresentation;
@@ -104,8 +103,6 @@ public final class ParcelableCall implements Parcelable {
         mVideoState = videoState;
         mConferenceableCallIds = Collections.unmodifiableList(conferenceableCallIds);
         mExtras = extras;
-        mNotificationType = notificationType;
-        mCode = code;
         mIsActiveSub = isActiveSub;
         mCallSubstate = callSubstate;
     }
@@ -142,6 +139,11 @@ public final class ParcelableCall implements Parcelable {
 
     /** Bitmask of properties of the call. */
     public int getProperties() { return mProperties; }
+
+    /** The time that the call object was created */
+    public long getCreateTimeMillis() {
+        return mCreateTimeMillis;
+    }
 
     /** The time that the call switched to the active state. */
     public long getConnectTimeMillis() {
@@ -244,14 +246,6 @@ public final class ParcelableCall implements Parcelable {
         return mExtras;
     }
 
-    public int getNotificationType() {
-        return mNotificationType;
-    }
-
-    public int getNotificationCode() {
-        return mCode;
-    }
-
     /**
      * The call substate.
      * @return The substate of the call.
@@ -273,6 +267,7 @@ public final class ParcelableCall implements Parcelable {
             source.readList(cannedSmsResponses, classLoader);
             int capabilities = source.readInt();
             int properties = source.readInt();
+            long createTimeMillis = source.readLong();
             long connectTimeMillis = source.readLong();
             Uri handle = source.readParcelable(classLoader);
             int handlePresentation = source.readInt();
@@ -290,8 +285,6 @@ public final class ParcelableCall implements Parcelable {
             List<String> conferenceableCallIds = new ArrayList<>();
             source.readList(conferenceableCallIds, classLoader);
             Bundle extras = source.readParcelable(classLoader);
-            int notificationType = source.readInt();
-            int code = source.readInt();
             boolean isActiveSub = (source.readInt() == 1) ? true : false;
             int callSubstate = source.readInt();
             return new ParcelableCall(
@@ -301,6 +294,7 @@ public final class ParcelableCall implements Parcelable {
                     cannedSmsResponses,
                     capabilities,
                     properties,
+                    createTimeMillis,
                     connectTimeMillis,
                     handle,
                     handlePresentation,
@@ -315,8 +309,6 @@ public final class ParcelableCall implements Parcelable {
                     videoState,
                     conferenceableCallIds,
                     extras,
-                    notificationType,
-                    code,
                     isActiveSub,
                     callSubstate);
         }
@@ -342,6 +334,7 @@ public final class ParcelableCall implements Parcelable {
         destination.writeList(mCannedSmsResponses);
         destination.writeInt(mCapabilities);
         destination.writeInt(mProperties);
+        destination.writeLong(mCreateTimeMillis);
         destination.writeLong(mConnectTimeMillis);
         destination.writeParcelable(mHandle, 0);
         destination.writeInt(mHandlePresentation);
@@ -357,8 +350,6 @@ public final class ParcelableCall implements Parcelable {
         destination.writeInt(mVideoState);
         destination.writeList(mConferenceableCallIds);
         destination.writeParcelable(mExtras, 0);
-        destination.writeInt(mNotificationType);
-        destination.writeInt(mCode);
         destination.writeInt(mIsActiveSub ? 1 : 0);
         destination.writeInt(mCallSubstate);
     }

@@ -34,8 +34,7 @@ import java.util.List;
 
 /**
  * Provides access to information about active calls and registration/call-management functionality.
- * Apps can use methods in this class to determine the current call state. Apps can also register new
- * {@link PhoneAccount}s and get a listing of existing {@link PhoneAccount}s.
+ * Apps can use methods in this class to determine the current call state.
  * <p>
  * Apps do not instantiate this class directly; instead, they retrieve a reference to an instance
  * through {@link Context#getSystemService Context.getSystemService(Context.TELECOM_SERVICE)}.
@@ -763,6 +762,26 @@ public class TelecomManager {
     }
 
     /**
+     * Return the voicemail number for a given phone account.
+     *
+     * @param accountHandle The handle for the account to retrieve the voicemail number for.
+     * @return A string representation if the voicemail number.
+     *
+     * @hide
+     */
+    @SystemApi
+    public String getVoiceMailNumber(PhoneAccountHandle accountHandle) {
+        try {
+            if (isServiceConnected()) {
+                return getTelecomService().getVoiceMailNumber(accountHandle);
+            }
+        } catch (RemoteException e) {
+            Log.e(TAG, "RemoteException calling ITelecomService#getVoiceMailNumber.", e);
+        }
+        return null;
+    }
+
+    /**
      * Return the line 1 phone number for given phone account.
      *
      * @param accountHandle The handle for the account retrieve a number for.
@@ -931,10 +950,10 @@ public class TelecomManager {
      * Returns current active subscription.
      * @hide
      */
-    public long getActiveSubscription() {
+    public int getActiveSubscription() {
         try {
             if (isServiceConnected()) {
-                return getTelecomService().getActiveSubscription();
+                return (int)getTelecomService().getActiveSubscription();
             }
         } catch (RemoteException e) {
             Log.e(TAG, "RemoteException attempting to get the active subsription.", e);
@@ -946,7 +965,7 @@ public class TelecomManager {
      * switches to other active subscription.
      * @hide
      */
-    public void switchToOtherActiveSub(long subId) {
+    public void switchToOtherActiveSub(int subId) {
         try {
             if (isServiceConnected()) {
                 getTelecomService().switchToOtherActiveSub(subId);

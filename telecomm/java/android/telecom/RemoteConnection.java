@@ -64,10 +64,6 @@ public final class RemoteConnection {
                 RemoteConnection connection,
                 DisconnectCause disconnectCause) {}
 
-        /** @hide */
-        public void setDisconnectedWithSsNotification(RemoteConnection connection,
-                int disconnectCause, String disconnectMessage, int type, int code) {}
-
         /**
          * Invoked when this {@code RemoteConnection} is requesting ringback. See
          * {@link #isRingbackRequested()}.
@@ -102,6 +98,7 @@ public final class RemoteConnection {
          * @hide
          */
         public void onCallPropertiesChanged(RemoteConnection connection, int callProperties) {}
+
         /**
          * Invoked when the post-dial sequence in the outgoing {@code Connection} has reached a
          * pause character. This causes the post-dial signals to stop pending user confirmation. An
@@ -876,15 +873,6 @@ public final class RemoteConnection {
             for (Callback c : mCallbacks) {
                 c.onDisconnected(this, mDisconnectCause);
             }
-        }
-    }
-
-    /** @hide */
-   public void setDisconnectedWithSsNotification(int disconnectCause,
-                String disconnectMessage, int type, int code) {
-        for (Callback c : mCallbacks) {
-            c.setDisconnectedWithSsNotification(this, disconnectCause,
-                    disconnectMessage, type, code);
         }
     }
 
