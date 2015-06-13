@@ -2038,6 +2038,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     - mCarrierLabelHeight - mStatusBarHeaderHeight)
             && mStackScroller.getVisibility() == View.VISIBLE
             && mState != StatusBarState.KEYGUARD;
+
+            if (mState == StatusBarState.KEYGUARD) {
+                // The subs are already displayed on the top bar
+                mSubsLabel.setVisibility(View.INVISIBLE);
+            } else {
+                mSubsLabel.setVisibility(View.VISIBLE);
+            }
         } else {
             makeVisible =
             !(emergencyCallsShownElsewhere && mNetworkController.isEmergencyOnly())
@@ -2695,7 +2702,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mStatusBarWindowManager.setStatusBarExpanded(true);
         mStatusBarView.setFocusable(false);
 
-        visibilityChanged(true);
+        if (!force) {
+            visibilityChanged(true);
+        }
         mWaitingForKeyguardExit = false;
         disable(mDisabledUnmodified, !force /* animate */);
         setInteracting(StatusBarManager.WINDOW_STATUS_BAR, true);

@@ -2553,7 +2553,7 @@
         android:permissionGroup="android.permission-group.MESSAGES"
         android:label="@string/permlab_modifyProtectedSmsList"
         android:description="@string/permdesc_modifyProtectedSmsList"
-        android:protectionLevel="signature" />
+        android:protectionLevel="signature|system" />
 
     <!-- Allows an application to receive sms (usually for auth or registration)
          from whitelisted addresses
@@ -2562,7 +2562,7 @@
         android:permissionGroup="android.permission-group.MESSAGES"
         android:label="@string/permlab_receiveProtectedSms"
         android:description="@string/permdesc_receiveProtectedSms"
-        android:protectionLevel="signature" />
+        android:protectionLevel="signature|system" />
 
     <!-- Allows an application to broadcast an SMS receipt notification.
          Not for use by third-party applications. -->
@@ -2986,6 +2986,36 @@
     <permission android:name="android.permission.RECORD_SCREEN"
         android:label="@string/permlab_recordScreen"
         android:description="@string/permdesc_recordScreen" />
+
+    <!-- =============================================================== -->
+    <!-- Permissions for accessing security data                         -->
+    <!-- =============================================================== -->
+    <eat-comment />
+
+    <!-- Used for permissions that allow an application to access or configure
+         the device security information.
+         @hide This is not a third-party API (intended for system apps). -->
+    <permission-group android:name="android.permission-group.SECURITY"
+        android:label="@string/permgrouplab_security"
+        android:icon="@drawable/perm_group_security"
+        android:description="@string/permgroupdesc_security"
+        android:priority="400"/>
+
+    <!-- Allows an application to read the phone blacklist data.
+         @hide This is not a third-party API (intended for system apps). -->
+    <permission android:name="android.permission.READ_PHONE_BLACKLIST"
+        android:permissionGroup="android.permission-group.SECURITY"
+        android:protectionLevel="signature|system"
+        android:label="@string/permlab_readPhoneBlacklist"
+        android:description="@string/permdesc_readPhoneBlacklist" />
+
+    <!-- Allows an application to change the phone blacklist data.
+         @hide This is not a third-party API (intended for system apps). -->
+    <permission android:name="android.permission.CHANGE_PHONE_BLACKLIST"
+        android:permissionGroup="android.permission-group.SECURITY"
+        android:protectionLevel="signature|system"
+        android:label="@string/permlab_changePhoneBlacklist"
+        android:description="@string/permdesc_changePhoneBlacklist" />
 
     <!-- The system process is explicitly the only one allowed to launch the
          confirmation UI for full backup/restore -->
