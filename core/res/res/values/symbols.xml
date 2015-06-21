@@ -2202,53 +2202,14 @@
   <java-symbol type="bool" name="config_reject_ggsn_perm_failure" />
   <java-symbol type="bool" name="config_protocol_errors_perm_failure" />
 
-  <!-- cpu boost for overscroller fling -->
-  <java-symbol type="bool" name="config_enableCpuBoostForOverScrollerFling" />
-  <java-symbol type="integer" name="flingboost_timeout_param" />
-  <java-symbol type="integer" name="flingboost_schedboost_param" />
-  <java-symbol type="integer" name="flingboost_cpuboost_param" />
-  <java-symbol type="integer" name="flingboost_pcdisbl_param" />
-  <java-symbol type="integer" name="flingboost_ksmboost_param" />
-
-  <!-- cpu boost for horizontal scroll -->
-  <java-symbol type="bool" name="config_enableCpuBoostForScroller" />
-  <java-symbol type="integer" name="scrollboost_timeout_param" />
-  <java-symbol type="integer" name="scrollboost_schedboost_param" />
-  <java-symbol type="integer" name="scrollboost_cpuboost_param" />
-  <java-symbol type="integer" name="scrollboost_pcdisbl_param" />
-  <java-symbol type="integer" name="scrollboost_ksmboost_param" />
-
   <!-- Data Connectivity Error Configurations -->
   <java-symbol type="bool" name="config_reject_ggsn_perm_failure" />
   <java-symbol type="bool" name="config_protocol_errors_perm_failure" />
   <!-- config softap extention feature -->
   <java-symbol type="bool" name="config_softap_extention" />
 
-  <!-- cpu boost for AppLaunch -->
-  <java-symbol type="bool" name="config_enableCpuBoostForAppLaunch" />
-  <java-symbol type="integer" name="launchboost_timeout_param" />
-  <java-symbol type="integer" name="launchboost_schedboost_param" />
-  <java-symbol type="integer" name="launchboost_cpuboost_param" />
-  <java-symbol type="integer" name="launchboost_cpu_6_7_offline_param" />
-  <java-symbol type="integer" name="launchboost_pcdisbl_param" />
-  <java-symbol type="integer" name="launchboost_ksmboost_param" />
-
-  <!-- Activities list for boost -->
-  <java-symbol type="array"  name="boost_activityList" />
-
-  <!-- Activity scroll boost params -->
-  <java-symbol type="integer" name="ascrollboost_timeout" />
-  <java-symbol type="integer" name="ascrollboost_schedboost" />
-  <java-symbol type="integer" name="ascrollboost_cpuboost" />
-  <java-symbol type="integer" name="ascrollboost_pcdisbl" />
-
-  <!-- cpu boost for Animationboost -->
-  <java-symbol type="bool" name="config_enablePerfBoostForAnimation" />
-  <java-symbol type="integer" name="animationboost_timeout_param" />
-  <java-symbol type="integer" name="animationboost_schedboost_param" />
-  <java-symbol type="integer" name="animationboost_cpuboost_param" />
-
   <java-symbol type="bool" name="config_fetch_apn_from_omh_card" />
+
   <!-- Configuration to play sms ringtone during MO/MT call -->
   <java-symbol type="bool" name="config_sms_ringtone_incall" />
 
@@ -2287,4 +2248,15 @@
   <java-symbol type="string" name="adb_both_active_notification_title" />
   <java-symbol type="string" name="adb_active_generic_notification_message" />
 
+  <!-- Performance Profiles -->
+  <java-symbol type="string" name="config_perf_profile_prop" />
+  <java-symbol type="string" name="config_perf_profile_default_entry" />
+  <java-symbol type="array" name="perf_profile_entries" />
+  <java-symbol type="array" name="perf_profile_values" />
+  <java-symbol type="string" name="perf_profile_pwrsv" />
+  <java-symbol type="string" name="perf_profile_bal" />
+  <java-symbol type="string" name="perf_profile_perf" />
+
+  <!-- Array of default activities with custom power management -->
+  <java-symbol type="array" name="config_auto_perf_activities" />
 </resources>

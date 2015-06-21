@@ -2136,56 +2136,16 @@
     <!-- Configuartion to support ESN Tracker -->
     <bool name="config_telephony_ESN_Tracker_enabled">false</bool>
 
-    <!-- Whether cpu boost is enabled for overscroller fling. -->
-    <bool name="config_enableCpuBoostForOverScrollerFling">false</bool>
-    <integer name="flingboost_timeout_param">0</integer>
-    <integer name="flingboost_schedboost_param">0</integer>
-    <integer name="flingboost_cpuboost_param">0</integer>
-    <integer name="flingboost_pcdisbl_param">0</integer>
-    <integer name="flingboost_ksmboost_param">0</integer>
-
-    <!-- Whether cpu boost is enabled for horizontal scroll. -->
-    <bool name="config_enableCpuBoostForScroller">false</bool>
-    <integer name="scrollboost_timeout_param">0</integer>
-    <integer name="scrollboost_schedboost_param">0</integer>
-    <integer name="scrollboost_cpuboost_param">0</integer>
-    <integer name="scrollboost_pcdisbl_param">0</integer>
-    <integer name="scrollboost_ksmboost_param">0</integer>
-
     <!-- Configuration to enable non-default PDP during IWLAN -->
     <bool name="config_feature_iwlan_enabled">false</bool>
     <!-- set to false if we dont need to consider data
          service state to display signal strength bars -->
     <bool name="config_combined_signal">true</bool>
 
-    <!-- Whether cpu boost is enabled for both application's 1st launch,subsequent
-         launch and in-app-activity -->
-    <bool name="config_enableCpuBoostForAppLaunch">false</bool>
-    <integer name="launchboost_timeout_param">0</integer>
-    <integer name="launchboost_schedboost_param">0</integer>
-    <integer name="launchboost_cpuboost_param">0</integer>
-    <integer name="launchboost_cpu_6_7_offline_param">0</integer>
-    <integer name="launchboost_pcdisbl_param">0</integer>
-    <integer name="launchboost_ksmboost_param">0</integer>
-
-   <!-- Activities list for boost -->
-   <string-array translatable="false" name="boost_activityList">
-   </string-array>
-
-   <!-- Activity scroll boost params -->
-   <integer name="ascrollboost_timeout">0</integer>
-   <integer name="ascrollboost_schedboost">0</integer>
-   <integer name="ascrollboost_cpuboost">0</integer>
-   <integer name="ascrollboost_pcdisbl">0</integer>
-
-   <bool name="config_enablePerfBoostForAnimation">false</bool>
-   <integer name="animationboost_timeout_param">0</integer>
-   <integer name="animationboost_schedboost_param">0</integer>
-   <integer name="animationboost_cpuboost_param">0</integer>
-
     <!-- Support for disabling to fetch APN from OMH card
          for some cdma carriers -->
     <bool name="config_fetch_apn_from_omh_card">true</bool>
+
     <!-- Configuration to play sms ringtone during MO/MT call -->
     <bool name="config_sms_ringtone_incall">false</bool>
 
@@ -2249,6 +2209,22 @@
 
     <!-- Boolean to enable stk functionality on Samsung phones -->
     <bool name="config_samsung_stk">false</bool>
+
+    <!-- Defines the system property to set for performance profile xe: sys.cpu.modes. Leave it
+         blank if the device do not support performance profiles -->
+    <string name="config_perf_profile_prop" translatable="false"></string>
+
+    <!-- When config_perf_profile_prop is defined, this value MUST be the index of
+         one of the listes values in frameworks/base/core/res/res/values/cm_arrays.xml
+         for "perf_profile_values" array. Leave it blank if the device do not support
+         performance profiles  -->
+    <string name="config_perf_profile_default_entry" translatable="false"></string>
+
+    <!-- Automatic power profile management per app.
+         Each item should list the fully-qualified activity
+         name and the power profile id, separated by a comma. -->
+    <string-array name="config_auto_perf_activities" translatable="false">
+    </string-array>
 
     <!-- Default value for proximity check on screen wake
          NOTE ! - Enable for devices that have a fast response proximity sensor (ideally < 300ms)

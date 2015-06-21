@@ -84,7 +84,6 @@ import android.service.voice.IVoiceInteractionSession;
 import android.util.EventLog;
 import android.util.Slog;
 import android.view.Display;
-import com.android.internal.app.ActivityTrigger;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -93,8 +92,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-
-import org.codeaurora.Performance;
 
 /**
  * State and management of a single stack of activities.
@@ -151,11 +148,6 @@ final class ActivityStack {
     final ActivityManagerService mService;
     final WindowManagerService mWindowManager;
 
-    public Performance mPerf = null;
-    public boolean mIsAnimationBoostEnabled = false;
-    public int aBoostTimeOut = 0;
-    public int aBoostCpuBoost = 0;
-    public int aBoostSchedBoost = 0;
     /**
      * The back history of all previous (and possibly still
      * running) activities.  It contains #TaskRecord objects.
@@ -263,8 +255,6 @@ final class ActivityStack {
 
     final Handler mHandler;
 
-    static final ActivityTrigger mActivityTrigger = new ActivityTrigger();
-
     final class ActivityStackHandler extends Handler {
         //public Handler() {
         //    if (localLOGV) Slog.v(TAG, "Handler started!");
@@ -356,16 +346,6 @@ final class ActivityStack {
         mWindowManager = mService.mWindowManager;
         mStackId = activityContainer.mStackId;
         mCurrentUser = mService.mCurrentUserId;
-        mIsAnimationBoostEnabled = mService.mContext.getResources().getBoolean(
-                   com.android.internal.R.bool.config_enablePerfBoostForAnimation);
-        if(mIsAnimationBoostEnabled) {
-           aBoostSchedBoost = mService.mContext.getResources().getInteger(
-                   com.android.internal.R.integer.animationboost_schedboost_param);
-           aBoostTimeOut = mService.mContext.getResources().getInteger(
-                   com.android.internal.R.integer.animationboost_timeout_param);
-           aBoostCpuBoost = mService.mContext.getResources().getInteger(
-                   com.android.internal.R.integer.animationboost_cpuboost_param);
-       }
     }
 
     /**
@@ -1612,7 +1592,8 @@ final class ActivityStack {
 
         if (DEBUG_SWITCH) Slog.v(TAG, "Resuming " + next);
 
-        mActivityTrigger.activityResumeTrigger(next.intent);
+        // Some activities may want to alter the system power management
+        mStackSupervisor.mPm.activityResumed(next.intent);
 
         // If we are currently pausing an activity, then don't do anything
         // until that is done.
@@ -1733,9 +1714,6 @@ final class ActivityStack {
         // that the previous one will be hidden soon.  This way it can know
         // to ignore it when computing the desired screen orientation.
         boolean anim = true;
-        if (mIsAnimationBoostEnabled == true && mPerf == null) {
-            mPerf = new Performance();
-        }
         if (prev != null) {
             if (prev.finishing) {
                 if (DEBUG_TRANSITION) Slog.v(TAG,
@@ -1747,8 +1725,8 @@ final class ActivityStack {
                     mWindowManager.prepareAppTransition(prev.task == next.task
                             ? AppTransition.TRANSIT_ACTIVITY_CLOSE
                             : AppTransition.TRANSIT_TASK_CLOSE, false);
-                    if(prev.task != next.task && mPerf != null) {
-                       mPerf.perfLockAcquire(aBoostTimeOut, aBoostSchedBoost, aBoostCpuBoost);
+                    if (prev.task != next.task) {
+                        mStackSupervisor.mPm.cpuBoost(2000 * 1000);
                     }
                 }
                 mWindowManager.setAppWillBeHidden(prev.appToken);
@@ -1764,8 +1742,8 @@ final class ActivityStack {
                             : next.mLaunchTaskBehind
                                     ? AppTransition.TRANSIT_TASK_OPEN_BEHIND
                                     : AppTransition.TRANSIT_TASK_OPEN, false);
-                    if(prev.task != next.task && mPerf != null) {
-                        mPerf.perfLockAcquire(aBoostTimeOut, aBoostSchedBoost, aBoostCpuBoost);
+                    if (prev.task != next.task) {
+                        mStackSupervisor.mPm.cpuBoost(2000 * 1000);
                     }
                 }
             }
@@ -2104,7 +2082,6 @@ final class ActivityStack {
         task.setFrontOfTask();
 
         r.putInHistory();
-        r.info.flags = mActivityTrigger.activityStartTrigger(r.intent, r.info.flags);
         if (!isHomeStack() || numActivities() > 0) {
             // We want to show the starting preview window if we are
             // switching to a new task, or the next activity's process is
