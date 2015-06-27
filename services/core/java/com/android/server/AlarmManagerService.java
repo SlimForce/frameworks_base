@@ -561,7 +561,7 @@ class AlarmManagerService extends SystemService {
                 }
                 setImplLocked(a.type, a.when, whenElapsed, a.windowLength, maxElapsed,
                         a.repeatInterval, a.operation, batch.standalone, doValidate, a.workSource,
-                        a.alarmClock, a.userId, false, true);
+                        a.alarmClock, a.userId, false);
             }
         }
     }
@@ -808,24 +808,19 @@ class AlarmManagerService extends SystemService {
             }
             setImplLocked(type, triggerAtTime, triggerElapsed, windowLength, maxElapsed,
                     interval, operation, isStandalone, true, workSource, alarmClock, userId,
-                    wakeupFiltered, false);
+                    wakeupFiltered);
         }
     }
 
     private void setImplLocked(int type, long when, long whenElapsed, long windowLength,
             long maxWhen, long interval, PendingIntent operation, boolean isStandalone,
             boolean doValidate, WorkSource workSource, AlarmManager.AlarmClockInfo alarmClock,
-            int userId, boolean wakeupFiltered, boolean isRebatching) {
+            int userId, boolean wakeupFiltered) {
         Alarm a = new Alarm(type, when, whenElapsed, windowLength, maxWhen, interval,
                 operation, workSource, alarmClock, userId);
 
         // Remove this alarm if already scheduled.
-        final boolean foundExistingWakeup;
-        if (!isRebatching) {
-            foundExistingWakeup = removeWithStatusLocked(operation);
-        } else {
-            foundExistingWakeup = false;
-        }
+        final boolean foundExistingWakeup = removeWithStatusLocked(operation);
 
         // note AppOp for accounting purposes
         // skip if the alarm already existed
@@ -1202,10 +1197,11 @@ class AlarmManagerService extends SystemService {
     }
 
     private Batch findFirstRtcWakeupBatchLocked() {
+        long elapsed = SystemClock.elapsedRealtime();
         final int N = mAlarmBatches.size();
         for (int i = 0; i < N; i++) {
             Batch b = mAlarmBatches.get(i);
-            long intervalTime  = b.start - SystemClock.elapsedRealtime();
+            long intervalTime = b.start - elapsed;
             if (b.isRtcPowerOffWakeup() && intervalTime > POWER_OFF_ALARM_THRESHOLD) {
                 return b;
             }
@@ -1610,7 +1606,7 @@ class AlarmManagerService extends SystemService {
                     setImplLocked(alarm.type, alarm.when + delta, nextElapsed, alarm.windowLength,
                             maxTriggerTime(nowELAPSED, nextElapsed, alarm.repeatInterval),
                             alarm.repeatInterval, alarm.operation, batch.standalone, true,
-                            alarm.workSource, alarm.alarmClock, alarm.userId, false, false);
+                            alarm.workSource, alarm.alarmClock, alarm.userId, false);
                 }
 
                 if (alarm.wakeup) {
