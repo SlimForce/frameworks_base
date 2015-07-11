@@ -35,7 +35,6 @@ import android.view.View;
 import android.view.WindowInsets;
 import android.widget.FrameLayout;
 import com.android.internal.util.slim.Action;
-import com.android.internal.util.slim.Converter;
 import com.android.systemui.recents.Constants;
 import com.android.systemui.recents.RecentsConfiguration;
 import com.android.systemui.recents.misc.SystemServicesProxy;
