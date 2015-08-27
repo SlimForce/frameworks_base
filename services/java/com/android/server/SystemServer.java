@@ -449,6 +449,8 @@ public final class SystemServer {
         boolean digitalPenCapable =
             Resources.getSystem().getBoolean(com.android.internal.R.bool.config_digitalPenCapable);
         boolean disableAtlas = SystemProperties.getBoolean("config.disable_atlas", false);
+        String[] externalServices = Resources.getSystem()
+                .getStringArray(com.android.internal.R.array.config_externalCMServices);
 
         try {
             Slog.i(TAG, "Reading configuration...");
@@ -997,15 +999,6 @@ public final class SystemServer {
 
             }
 
-            if (!disableNonCoreServices) {
-                try {
-                    Slog.i(TAG, "CmHardwareService");
-                    ServiceManager.addService(Context.CMHW_SERVICE, new CmHardwareService(context));
-                } catch (Throwable e) {
-                    reportWtf("starting CMHW Service", e);
-                }
-            }
-
             mSystemServiceManager.startService(LauncherAppsService.class);
 
             boolean isWipowerEnabled = SystemProperties.getBoolean("ro.bluetooth.wipower", false);
@@ -1083,6 +1076,16 @@ public final class SystemServer {
 
         // MMS service broker
         mmsService = mSystemServiceManager.startService(MmsServiceBroker.class);
+
+        // Externally-defined services
+        for (String service : externalServices) {
+            try {
+                Slog.i(TAG, service);
+                mSystemServiceManager.startService(service);
+            } catch (Throwable e) {
+                Slog.e(TAG, "Failure starting " + service , e);
+            }
+        }
 
         // It is now time to start up the app processes...
 
