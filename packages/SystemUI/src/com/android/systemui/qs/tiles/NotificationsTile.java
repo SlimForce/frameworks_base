@@ -30,10 +30,14 @@
 package com.android.systemui.qs.tiles;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.provider.Settings;
 import android.provider.Settings.Global;
 import android.util.Log;
 import android.view.View;
@@ -50,6 +54,10 @@ import com.android.systemui.volume.ZenModePanel;
 
 /** Quick settings tile: Notifications **/
 public class NotificationsTile extends QSTile<NotificationsTile.NotificationsState> {
+
+    private static final Intent ZENMODE_SETTINGS = new Intent().setComponent(new ComponentName(
+            "com.android.settings", "com.android.settings.Settings$ZenModeSettingsActivity"));
+
     private final ZenModeController mZenController;
     private final AudioManager mAudioManager;
     private final Vibrator mVibrator;
@@ -75,11 +83,6 @@ public class NotificationsTile extends QSTile<NotificationsTile.NotificationsSta
         mZenController = host.getZenModeController();
         mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
         mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
-    }
-
-    @Override
-    public DetailAdapter getDetailAdapter() {
-        return mDetailAdapter;
     }
 
     @Override
@@ -110,6 +113,14 @@ public class NotificationsTile extends QSTile<NotificationsTile.NotificationsSta
         int ringerMode = RINGERS[mRingerIndex];
         int zenMode = ZENS[mRingerIndex];
 
+        // If we are setting a ringer state, ring to indicate it
+        if (ringerMode == AudioManager.RINGER_MODE_NORMAL) {
+            Ringtone ringTone = RingtoneManager.getRingtone(mContext,
+                Settings.System.DEFAULT_NOTIFICATION_URI);
+            ringTone.setStreamType(AudioManager.STREAM_MUSIC);
+            ringTone.play();
+        }
+
         // If we are setting a vibrating state, vibrate to indicate it
         if (ringerMode == AudioManager.RINGER_MODE_VIBRATE && mVibrator != null) {
             boolean hasVibrator = mVibrator.hasVibrator();
@@ -124,7 +135,7 @@ public class NotificationsTile extends QSTile<NotificationsTile.NotificationsSta
 
     @Override
     protected void handleLongClick() {
-        showDetail(true);
+        mHost.startSettingsActivity(ZENMODE_SETTINGS);
     }
 
     @Override
@@ -134,6 +145,16 @@ public class NotificationsTile extends QSTile<NotificationsTile.NotificationsSta
         state.ringerMode = mAudioManager.getRingerMode();
         state.icon = ResourceIcon.get(getNotificationIconId(state.zen, state.ringerMode));
         state.label = mContext.getString(R.string.quick_settings_notifications_label);
+        mRingerIndex = getRingerIndex(state.ringerMode, state.zen);
+    }
+
+    private int getRingerIndex(int ringerMode, int zenMode) {
+        for (int ringerIndex = 0; ringerIndex < RINGERS.length; ringerIndex++) {
+            if (ringerMode == RINGERS[ringerIndex] && zenMode == ZENS[ringerIndex]) {
+                return ringerIndex;
+            }
+        }
+        return 0;
     }
 
     private int getNotificationIconId(int zenMode, int ringerMode) {
@@ -185,65 +206,6 @@ public class NotificationsTile extends QSTile<NotificationsTile.NotificationsSta
             if (AudioManager.RINGER_MODE_CHANGED_ACTION.equals(intent.getAction())) {
                 refreshState();
             }
-        }
-    };
-
-    private final DetailAdapter mDetailAdapter = new DetailAdapter() {
-
-        @Override
-        public int getTitle() {
-            return R.string.quick_settings_notifications_label;
-        }
-
-        @Override
-        public Boolean getToggleState() {
-            return null;
-        }
-
-        public void setToggleState(boolean state) {
-            // noop
-        }
-
-        public Intent getSettingsIntent() {
-            return ZenModePanel.ZEN_SETTINGS;
-        }
-
-        @Override
-        public View createDetailView(Context context, View convertView, ViewGroup parent) {
-            if (convertView != null) return convertView;
-            final VolumeComponent volumeComponent = mHost.getVolumeComponent();
-            final VolumePanel vp = new VolumePanel(mContext, parent, mZenController);
-            final View v = vp.getContentView();
-            v.addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
-                @Override
-                public void onViewDetachedFromWindow(View v) {
-                    volumeComponent.setVolumePanel(null);
-                }
-
-                @Override
-                public void onViewAttachedToWindow(View v) {
-                    vp.updateStates();
-                    vp.onConfigurationChanged(null);
-                    volumeComponent.setVolumePanel(vp);
-                }
-            });
-            vp.setZenModePanelCallback(new ZenModePanel.Callback() {
-                @Override
-                public void onMoreSettings() {
-                    mHost.startSettingsActivity(ZenModePanel.ZEN_SETTINGS);
-                }
-
-                @Override
-                public void onInteraction() {
-                    // noop
-                }
-
-                @Override
-                public void onExpanded(boolean expanded) {
-                }
-            });
-            vp.postVolumeChanged(AudioManager.STREAM_RING, AudioManager.FLAG_SHOW_UI);
-            return v;
         }
     };
 }
