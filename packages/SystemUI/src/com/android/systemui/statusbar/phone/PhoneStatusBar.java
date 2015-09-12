@@ -1704,8 +1704,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     @Override
-    public void scheduleHeadsUpOpen() {
-        mHandler.sendEmptyMessage(MSG_SHOW_HEADS_UP);
+    public void scheduleHeadsUpOpen(boolean immediate) {
+        if (immediate) {
+            setHeadsUpVisibility(true);
+        } else {
+            mHandler.sendEmptyMessage(MSG_SHOW_HEADS_UP);
+        }
     }
 
     @Override
@@ -4708,8 +4712,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     }
 
-    protected void setVisualizerAlpha(float alpha) {
-        mVisualizerView.setAlpha(alpha);
+    public VisualizerView getVisualizer() {
+        return mVisualizerView;
     }
 
     private final class ShadeUpdates {
