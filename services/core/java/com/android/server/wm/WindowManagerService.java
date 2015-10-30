@@ -5817,7 +5817,7 @@ public class WindowManagerService extends IWindowManager.Stub
         boolean wallpaperEnabled = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_enableWallpaperService)
                 && !mOnlyCore;
-        boolean haveKeyguard = true;
+        boolean haveKeyguard = false;
         // TODO(multidisplay): Expand to all displays?
         final WindowList windows = getDefaultWindowListLocked();
         final int N = windows.size();
@@ -6222,10 +6222,13 @@ public class WindowManagerService extends IWindowManager.Stub
         int retryCount = 0;
         WindowState appWin = null;
 
-        final boolean appIsImTarget = mInputMethodTarget != null
-                && mInputMethodTarget.mAppToken != null
-                && mInputMethodTarget.mAppToken.appToken != null
-                && mInputMethodTarget.mAppToken.appToken.asBinder() == appToken;
+        boolean appIsImTarget;
+        synchronized(mWindowMap) {
+            appIsImTarget = mInputMethodTarget != null
+                    && mInputMethodTarget.mAppToken != null
+                    && mInputMethodTarget.mAppToken.appToken != null
+                    && mInputMethodTarget.mAppToken.appToken.asBinder() == appToken;
+        }
 
         final int aboveAppLayer = (mPolicy.windowTypeToLayerLw(TYPE_APPLICATION) + 1)
                 * TYPE_LAYER_MULTIPLIER + TYPE_LAYER_OFFSET;
